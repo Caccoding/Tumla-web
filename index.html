@@ -2,6 +2,7 @@
 <html lang="da">
 <head>
 <meta charset="UTF-8">
+<script>document.documentElement.classList.add("js");</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tumla – Små øjeblikke, hver dag</title>
 <meta name="description" content="Tumla giver idéer til leg og nærvær med dit barn fra 0 til 2 år. Tumla gives you ideas for play with your child from 0 to 2.">
@@ -60,18 +61,33 @@
     display: flex; align-items: flex-end; margin-bottom: 1.5rem;
   }
   .mark .word { animation: fade 500ms ease-out both; }
-  .mark .ball {
-    width: 0.2em; height: 0.2em; margin: 0 0 0.09em 0.08em;
-    animation: roll 1100ms cubic-bezier(.22,1.2,.36,1) 250ms both;
-  }
+  .mark .base { display: inline-block; width: 0; height: 0; }
+  .mark .ball-x { display: inline-block; line-height: 0; margin: 0 0 0.09em 0.08em; }
+  .mark .ball { display: block; width: 0.2em; height: 0.2em; transform-origin: center bottom; }
+  .js .mark:not(.go) .ball { opacity: 0; }
+  .mark.go .ball-x { animation: hop-x 1900ms linear both; }
+  .mark.go .ball { animation: hop-y 1900ms linear both; }
   @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes roll {
-    0%   { opacity: 0; transform: translateX(1.4em) translateY(-0.9em); }
-    35%  { opacity: 1; transform: translateX(0.6em) translateY(0); }
-    60%  { transform: translateX(0.15em) translateY(-0.22em); }
-    80%  { transform: translateX(0) translateY(0); }
-    90%  { transform: translateX(-0.02em) translateY(-0.05em); }
-    100% { transform: translateX(0) translateY(0); }
+  /* Sideways movement: on the l, over to the a, then to its place */
+  @keyframes hop-x {
+    0%, 31%  { transform: translateX(var(--lx, 0)); }
+    55%, 58% { transform: translateX(var(--ax, 0)); }
+    85%, 100% { transform: translateX(0); }
+  }
+  /* Up and down: fall, bounce, bounce, settle */
+  @keyframes hop-y {
+    0%   { opacity: 0; transform: translateY(calc(var(--ly, 0px) - 1.2em)); animation-timing-function: cubic-bezier(.55,0,1,.45); }
+    4%   { opacity: 1; }
+    28%  { transform: translateY(var(--ly, 0px)) scale(1.18, 0.78); animation-timing-function: ease-out; }
+    31%  { transform: translateY(var(--ly, 0px)) scale(1); animation-timing-function: cubic-bezier(0,.55,.45,1); }
+    43%  { transform: translateY(calc(var(--ly, 0px) - 0.32em)); animation-timing-function: cubic-bezier(.55,0,1,.45); }
+    55%  { transform: translateY(var(--ay, 0px)) scale(1.14, 0.82); animation-timing-function: ease-out; }
+    58%  { transform: translateY(var(--ay, 0px)) scale(1); animation-timing-function: cubic-bezier(0,.55,.45,1); }
+    71%  { transform: translateY(calc(var(--ay, 0px) - 0.26em)); animation-timing-function: cubic-bezier(.55,0,1,.45); }
+    85%  { transform: translateY(0) scale(1.1, 0.88); animation-timing-function: ease-out; }
+    87%  { transform: translateY(0) scale(1); animation-timing-function: cubic-bezier(0,.55,.45,1); }
+    93%  { transform: translateY(-0.08em); animation-timing-function: cubic-bezier(.55,0,1,.45); }
+    98%, 100% { opacity: 1; transform: translateY(0); }
   }
   .tagline { font-family: var(--display); font-weight: 700; font-size: clamp(1.6rem, 3.2vw, 2.1rem); line-height: 1.15; margin-bottom: 1rem; }
   .lede { max-width: 34rem; color: var(--ink-soft); font-size: 1.15rem; margin-bottom: 2rem; }
@@ -194,7 +210,7 @@
   <div class="hero">
     <div class="wrap">
       <div>
-        <h1 class="mark" aria-label="Tumla"><span class="word" aria-hidden="true">tumla</span><span class="ball" aria-hidden="true"></span></h1>
+        <h1 class="mark" aria-label="Tumla"><span class="word" aria-hidden="true">tum<span class="lt">l</span><span class="at">a</span><span class="base"></span></span><span class="ball-x" aria-hidden="true"><span class="ball"></span></span></h1>
         <p class="tagline"><span class="da">Små øjeblikke, hver dag.</span><span class="en">Small moments, every day.</span></p>
         <p class="lede">
           <span class="da">Idéer til leg og nærvær med dit barn fra 0 til 2 år, tilpasset barnets alder og dagens rytme.</span>
@@ -382,7 +398,7 @@
         li.querySelector(".count").textContent = n + " " + word;
         li.querySelector(".fill").style.setProperty("--w", Math.round(n / max * 100) + "%");
       });
-      hint.style.display = period === "week" ? "" : "none";
+      hint.style.visibility = period === "week" ? "" : "hidden";
     }
 
     periodButtons.forEach(function (b) {
@@ -396,6 +412,33 @@
     buttons.forEach(function (b) {
       b.addEventListener("click", function () { setLang(b.dataset.set); });
     });
+
+    // Ball drop on the logo: measure where the l and a are, then start
+    var mark = document.querySelector(".mark");
+    function startBall() {
+      if (mark.classList.contains("go")) return;
+      try {
+        var fs = parseFloat(getComputedStyle(mark).fontSize);
+        var ctx = document.createElement("canvas").getContext("2d");
+        ctx.font = getComputedStyle(mark).fontWeight + " " + fs + "px Fredoka";
+        var baseline = mark.querySelector(".base").getBoundingClientRect().bottom;
+        var ball = mark.querySelector(".ball-x").getBoundingClientRect();
+        var ballX = ball.left + ball.width / 2;
+        [["l", ".lt"], ["a", ".at"]].forEach(function (pair) {
+          var r = mark.querySelector(pair[1]).getBoundingClientRect();
+          var top = baseline - ctx.measureText(pair[0]).actualBoundingBoxAscent;
+          mark.style.setProperty("--" + pair[0] + "x", Math.round(r.left + r.width / 2 - ballX) + "px");
+          mark.style.setProperty("--" + pair[0] + "y", Math.round(top - ball.bottom) + "px");
+        });
+      } catch (e) {}
+      mark.classList.add("go");
+    }
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(startBall);
+      setTimeout(startBall, 2000);
+    } else {
+      startBall();
+    }
 
     setLang(param === "en" || param === "da" ? param : browser);
   })();
