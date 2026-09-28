@@ -1,8 +1,404 @@
 <!DOCTYPE html>
 <html lang="da">
-<head><meta charset="UTF-8"><title>Tumla</title></head>
-<body style="font-family:sans-serif;text-align:center;padding:4rem;background:#FBF6EF;color:#3D3733">
-  <h1>Tumla</h1>
-  <p>Små øjeblikke, hver dag. Kommer snart.</p>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tumla – Små øjeblikke, hver dag</title>
+<meta name="description" content="Tumla giver idéer til leg og nærvær med dit barn fra 0 til 2 år. Tumla gives you ideas for play with your child from 0 to 2.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600&family=Fredoka:wght@600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #EEF1E6;
+    --ink: #26322B;
+    --ink-soft: #55625A;
+    --sage: #9DB99A;
+    --sage-light: #DCE6D6;
+    --mustard: #E6B84D;
+    --peach: #F4CDBA;
+    --white: #FBFCF8;
+    --display: "Bricolage Grotesque", system-ui, sans-serif;
+    --body: "Figtree", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: var(--body);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    color: var(--ink);
+    background: var(--paper);
+  }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--mustard); outline-offset: 3px; border-radius: 4px; }
+
+  /* Language switching */
+  html:not(.en) .en, html.en .da { display: none !important; }
+
+  .wrap { width: min(1080px, 100% - 2.5rem); margin-inline: auto; }
+
+  /* Header */
+  header { padding: 1.25rem 0; }
+  header .wrap { display: flex; justify-content: space-between; align-items: center; }
+  .logo { font-family: "Fredoka", var(--display); font-weight: 600; font-size: 1.6rem; text-decoration: none; letter-spacing: -0.02em; display: inline-flex; align-items: flex-end; line-height: 1; }
+  .logo .ball { width: 0.24em; height: 0.24em; margin: 0 0 0.1em 0.1em; }
+  .ball { display: inline-block; border-radius: 50%; background: var(--mustard); flex: none; }
+  .lang { display: flex; gap: 0.25rem; background: var(--white); padding: 0.25rem; border-radius: 999px; }
+  .lang button {
+    font: 600 0.875rem var(--body); border: 0; background: transparent; color: var(--ink-soft);
+    padding: 0.35rem 0.8rem; border-radius: 999px; cursor: pointer;
+  }
+  .lang button[aria-pressed="true"] { background: var(--ink); color: var(--white); }
+
+  /* Hero */
+  .hero { padding: 2.5rem 0 5rem; }
+  .hero .wrap { display: grid; grid-template-columns: 1.15fr 1fr; gap: 3rem; align-items: center; }
+  .mark {
+    font-family: "Fredoka", var(--display); font-weight: 600;
+    font-size: clamp(5.5rem, 17vw, 11.5rem); line-height: 0.9; letter-spacing: -0.03em;
+    display: flex; align-items: flex-end; margin-bottom: 1.5rem;
+  }
+  .mark .word { animation: fade 500ms ease-out both; }
+  .mark .ball {
+    width: 0.2em; height: 0.2em; margin: 0 0 0.09em 0.08em;
+    animation: roll 1100ms cubic-bezier(.22,1.2,.36,1) 250ms both;
+  }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes roll {
+    0%   { opacity: 0; transform: translateX(1.4em) translateY(-0.9em); }
+    35%  { opacity: 1; transform: translateX(0.6em) translateY(0); }
+    60%  { transform: translateX(0.15em) translateY(-0.22em); }
+    80%  { transform: translateX(0) translateY(0); }
+    90%  { transform: translateX(-0.02em) translateY(-0.05em); }
+    100% { transform: translateX(0) translateY(0); }
+  }
+  .tagline { font-family: var(--display); font-weight: 700; font-size: clamp(1.6rem, 3.2vw, 2.1rem); line-height: 1.15; margin-bottom: 1rem; }
+  .lede { max-width: 34rem; color: var(--ink-soft); font-size: 1.15rem; margin-bottom: 2rem; }
+  .btn {
+    display: inline-block; font: 600 1.05rem var(--body); text-decoration: none;
+    background: var(--ink); color: var(--white); padding: 0.95rem 1.6rem; border-radius: 999px;
+    transition: transform 150ms ease;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .note { margin-top: 0.9rem; font-size: 0.95rem; color: var(--ink-soft); }
+
+  /* Card stack */
+  .day { position: relative; padding: 1rem 0; }
+  .day-title { font-family: var(--display); font-weight: 700; font-size: 1.1rem; margin: 0 0 1rem 0.5rem; }
+  .plan { list-style: none; display: grid; gap: 0.9rem; }
+  .plan li {
+    background: var(--white); border-radius: 22px; padding: 1.1rem 1.3rem;
+    display: grid; grid-template-columns: 4.2rem 1fr; gap: 0.2rem 1rem;
+    box-shadow: 0 1px 0 rgba(38,50,43,.08), 0 10px 24px -14px rgba(38,50,43,.35);
+  }
+  .plan li:nth-child(1) { transform: rotate(-1.8deg); }
+  .plan li:nth-child(2) { transform: rotate(1.4deg) translateX(1.2rem); background: var(--peach); }
+  .plan li:nth-child(3) { transform: rotate(-0.8deg); background: var(--sage-light); }
+  .time { grid-row: span 2; font-family: var(--display); font-weight: 700; font-size: 1.15rem; padding-top: 0.1rem; }
+  .plan h3 { font-family: var(--display); font-weight: 700; font-size: 1.15rem; line-height: 1.25; }
+  .meta { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.4rem; }
+  .meta span { font-size: 0.8rem; font-weight: 600; background: rgba(38,50,43,.07); padding: 0.15rem 0.6rem; border-radius: 999px; }
+
+  /* Sections */
+  section { padding: 4.5rem 0; }
+  h2 { font-family: var(--display); font-weight: 800; font-size: clamp(2rem, 4.5vw, 3rem); line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 2.5rem; max-width: 20ch; }
+
+  .steps { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; counter-reset: step; }
+  .steps li { counter-increment: step; }
+  .steps li::before {
+    content: counter(step); display: block; font-family: var(--display); font-weight: 800;
+    font-size: 3.5rem; line-height: 1; color: var(--mustard); margin-bottom: 0.6rem;
+  }
+  .steps h3 { font-family: var(--display); font-weight: 700; font-size: 1.3rem; margin-bottom: 0.4rem; }
+  .steps p { color: var(--ink-soft); max-width: 30ch; }
+
+  .ages { background: var(--white); border-radius: 40px; padding: 4rem 0; }
+  .timeline { list-style: none; display: grid; grid-template-columns: repeat(6, 1fr); position: relative; }
+  .timeline::before { content: ""; position: absolute; left: 0; right: 0; top: 0.55rem; height: 3px; background: var(--sage-light); border-radius: 3px; }
+  .timeline li { position: relative; padding: 2rem 0.75rem 0 0; }
+  .timeline li::before {
+    content: ""; position: absolute; top: 0; left: 0; width: 1.1rem; height: 1.1rem;
+    border-radius: 50%; background: var(--sage); border: 3px solid var(--white);
+  }
+  .timeline li:nth-child(even)::before { background: var(--mustard); }
+  .range { font-family: var(--display); font-weight: 700; font-size: 1.2rem; display: block; }
+  .unit { font-size: 0.85rem; color: var(--ink-soft); display: block; margin-bottom: 0.4rem; }
+  .timeline p { font-size: 0.98rem; }
+
+  .promise { background: var(--ink); color: var(--white); border-radius: 40px; padding: 4rem clamp(1.5rem, 5vw, 4rem); display: grid; grid-template-columns: 1.2fr 1fr; gap: 2.5rem; align-items: end; }
+  .promise h2 { margin: 0; color: var(--white); }
+  .promise p { color: #C9D3CB; font-size: 1.1rem; max-width: 36ch; }
+
+  .signup { text-align: left; }
+  .signup p { color: var(--ink-soft); font-size: 1.15rem; max-width: 36rem; margin: -1.5rem 0 2rem; }
+
+  footer { padding: 3rem 0 3.5rem; border-top: 2px solid var(--sage-light); font-size: 0.9rem; color: var(--ink-soft); }
+  footer .wrap { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; }
+  footer h3 { font-family: var(--display); font-size: 1rem; color: var(--ink); margin-bottom: 0.4rem; }
+  footer p { max-width: 62ch; }
+  footer p + p { margin-top: 0.6rem; }
+  .copy { align-self: end; text-align: right; }
+
+  /* Weekly overview */
+  .overview .wrap { display: grid; grid-template-columns: 1fr 1.1fr; gap: 3rem; align-items: center; }
+  .overview h2 { margin-bottom: 1.25rem; }
+  .overview .intro p { color: var(--ink-soft); font-size: 1.1rem; max-width: 34ch; }
+  .overview .intro p + p { margin-top: 0.8rem; }
+  .week { background: var(--white); border-radius: 28px; padding: 1.75rem; box-shadow: 0 1px 0 rgba(38,50,43,.08), 0 14px 30px -18px rgba(38,50,43,.4); }
+  .week-head { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .week-head h3 { font-family: var(--display); font-weight: 700; font-size: 1.2rem; }
+  .period { display: flex; gap: 0.25rem; background: var(--paper); padding: 0.25rem; border-radius: 999px; }
+  .period button { font: 600 0.85rem var(--body); border: 0; background: transparent; color: var(--ink-soft); padding: 0.35rem 0.85rem; border-radius: 999px; cursor: pointer; }
+  .period button[aria-pressed="true"] { background: var(--ink); color: var(--white); }
+  .bars { list-style: none; display: grid; gap: 1.1rem; }
+  .bar-label { display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 0.35rem; }
+  .bar-label .count { color: var(--ink-soft); font-weight: 500; }
+  .track { height: 14px; background: var(--paper); border-radius: 999px; overflow: hidden; }
+  .fill { height: 100%; border-radius: 999px; width: var(--w); transition: width 500ms cubic-bezier(.34,1.3,.64,1); }
+  .bars li:nth-child(1) .fill { background: var(--sage); }
+  .bars li:nth-child(2) .fill { background: var(--mustard); }
+  .bars li:nth-child(3) .fill { background: var(--peach); }
+  .bars li:nth-child(4) .fill { background: #7FA0A8; }
+  .hint { margin-top: 1.5rem; padding-top: 1.1rem; border-top: 2px solid var(--paper); font-size: 0.95rem; color: var(--ink-soft); }
+
+  @media (max-width: 860px) {
+    .overview .wrap { grid-template-columns: 1fr; }
+    .hero .wrap, .promise { grid-template-columns: 1fr; }
+    .hero { padding-top: 1.5rem; }
+    .steps { grid-template-columns: 1fr; gap: 2rem; }
+    .timeline { grid-template-columns: 1fr 1fr; row-gap: 2rem; }
+    .timeline::before { display: none; }
+    footer .wrap { grid-template-columns: 1fr; }
+    .copy { text-align: left; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mark span { animation: none; }
+    .btn { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="logo" href="/" aria-label="Tumla">tumla<span class="ball" aria-hidden="true"></span></a>
+    <div class="lang" role="group" aria-label="Sprog / Language">
+      <button type="button" data-set="da" aria-pressed="true">DA</button>
+      <button type="button" data-set="en" aria-pressed="false">EN</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="hero">
+    <div class="wrap">
+      <div>
+        <h1 class="mark" aria-label="Tumla"><span class="word" aria-hidden="true">tumla</span><span class="ball" aria-hidden="true"></span></h1>
+        <p class="tagline"><span class="da">Små øjeblikke, hver dag.</span><span class="en">Small moments, every day.</span></p>
+        <p class="lede">
+          <span class="da">Idéer til leg og nærvær med dit barn fra 0 til 2 år, tilpasset barnets alder og dagens rytme.</span>
+          <span class="en">Ideas for play and time together with your child from 0 to 2, matched to their age and the rhythm of the day.</span>
+        </p>
+        <!-- Erstat linket med dit Google Forms-, Brevo- eller Mailchimp-link -->
+        <a class="btn" href="https://forms.gle/DIT-LINK-HER">
+          <span class="da">Få besked ved lancering</span><span class="en">Get notified at launch</span>
+        </a>
+        <p class="note">
+          <span class="da">Appen er under udvikling. Den bliver gratis, og du skal ikke oprette en konto.</span>
+          <span class="en">The app is in development. It will be free, with no account needed.</span>
+        </p>
+      </div>
+
+      <div class="day" aria-label="Eksempel på en dag i appen">
+        <p class="day-title"><span class="da">Ellas dag, 7 måneder</span><span class="en">Ella's day, 7 months</span></p>
+        <ul class="plan">
+          <li>
+            <span class="time">8:30</span>
+            <h3><span class="da">Spejl-leg på maven</span><span class="en">Mirror play on the tummy</span></h3>
+            <div class="meta"><span>10 min</span><span class="da">Inde</span><span class="en">Indoors</span><span class="da">Motorik</span><span class="en">Motor skills</span></div>
+          </li>
+          <li>
+            <span class="time">10:45</span>
+            <h3><span class="da">Gåtur og lyde i parken</span><span class="en">A walk and sounds in the park</span></h3>
+            <div class="meta"><span>30 min</span><span class="da">Ude</span><span class="en">Outdoors</span><span class="da">Sanser</span><span class="en">Senses</span></div>
+          </li>
+          <li>
+            <span class="time">15:00</span>
+            <h3><span class="da">Gemmeleg med tørklæde</span><span class="en">Peekaboo with a scarf</span></h3>
+            <div class="meta"><span>5 min</span><span class="da">Inde</span><span class="en">Indoors</span><span>Social</span></div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <h2><span class="da">Sådan virker Tumla</span><span class="en">How Tumla works</span></h2>
+      <ol class="steps">
+        <li>
+          <h3><span class="da">Skriv barnets fødselsdato</span><span class="en">Add your child's birth date</span></h3>
+          <p><span class="da">Tumla regner alderen ud og viser kun idéer, der passer lige nu.</span><span class="en">Tumla works out the age and only shows ideas that fit right now.</span></p>
+        </li>
+        <li>
+          <h3><span class="da">Få dagens forslag</span><span class="en">Get today's ideas</span></h3>
+          <p><span class="da">En løs plan, der følger lure og måltider, så du ikke selv skal finde på.</span><span class="en">A loose plan around naps and meals, so you don't have to come up with it yourself.</span></p>
+        </li>
+        <li>
+          <h3><span class="da">Byt det, der ikke passer</span><span class="en">Swap what doesn't fit</span></h3>
+          <p><span class="da">Regnvejr, træt baby eller kun ti minutter? Ét tryk giver et nyt forslag.</span><span class="en">Rain, a tired baby or only ten minutes? One tap gives you a new idea.</span></p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="overview">
+    <div class="wrap">
+      <div class="intro">
+        <h2><span class="da">Se hvad I har leget med</span><span class="en">See what you've been playing with</span></h2>
+        <p><span class="da">Hver aktivitet, du markerer som gjort, tæller med i det udviklingsområde, den øver. Så kan du se, om ugen har været mest motorik, eller om det er tid til lidt mere sprog.</span><span class="en">Every activity you mark as done counts towards the area it practises. You can see if the week was mostly motor skills, or if it's time for a little more language.</span></p>
+        <p><span class="da">Det er et overblik, ikke en karakter. Alle børn udvikler sig i deres eget tempo.</span><span class="en">It's an overview, not a score. Every child develops at their own pace.</span></p>
+      </div>
+
+      <div class="week" aria-label="Eksempel på ugeoverblik">
+        <div class="week-head">
+          <h3><span class="da">Ellas leg</span><span class="en">Ella's play</span></h3>
+          <div class="period" role="group" aria-label="Periode / Period">
+            <button type="button" data-period="week" aria-pressed="true"><span class="da">Denne uge</span><span class="en">This week</span></button>
+            <button type="button" data-period="total" aria-pressed="false"><span class="da">I alt</span><span class="en">All time</span></button>
+          </div>
+        </div>
+        <ul class="bars">
+          <li data-week="7" data-total="58">
+            <div class="bar-label"><span><span class="da">Motorik</span><span class="en">Motor skills</span></span><span class="count"></span></div>
+            <div class="track"><div class="fill"></div></div>
+          </li>
+          <li data-week="4" data-total="41">
+            <div class="bar-label"><span><span class="da">Sprog</span><span class="en">Language</span></span><span class="count"></span></div>
+            <div class="track"><div class="fill"></div></div>
+          </li>
+          <li data-week="5" data-total="47">
+            <div class="bar-label"><span><span class="da">Sanser</span><span class="en">Senses</span></span><span class="count"></span></div>
+            <div class="track"><div class="fill"></div></div>
+          </li>
+          <li data-week="2" data-total="36">
+            <div class="bar-label"><span>Social</span><span class="count"></span></div>
+            <div class="track"><div class="fill"></div></div>
+          </li>
+        </ul>
+        <p class="hint" data-hint>
+          <span class="da">Forslag: Prøv en gemmeleg eller sang i morgen for lidt mere socialt samvær.</span>
+          <span class="en">Idea: Try peekaboo or a song tomorrow for a bit more social play.</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="ages">
+    <div class="wrap">
+      <h2><span class="da">Idéer, der vokser med barnet</span><span class="en">Ideas that grow with your child</span></h2>
+      <ol class="timeline">
+        <li><span class="range">0–3</span><span class="unit"><span class="da">måneder</span><span class="en">months</span></span><p><span class="da">Sort-hvide kort</span><span class="en">Black-and-white cards</span></p></li>
+        <li><span class="range">3–6</span><span class="unit"><span class="da">måneder</span><span class="en">months</span></span><p><span class="da">Spejl-leg</span><span class="en">Mirror play</span></p></li>
+        <li><span class="range">6–9</span><span class="unit"><span class="da">måneder</span><span class="en">months</span></span><p><span class="da">Sanseposer</span><span class="en">Sensory bags</span></p></li>
+        <li><span class="range">9–12</span><span class="unit"><span class="da">måneder</span><span class="en">months</span></span><p><span class="da">Kravlebane af puder</span><span class="en">Cushion crawling course</span></p></li>
+        <li><span class="range">12–18</span><span class="unit"><span class="da">måneder</span><span class="en">months</span></span><p><span class="da">Vandleg med kopper</span><span class="en">Water play with cups</span></p></li>
+        <li><span class="range">18–24</span><span class="unit"><span class="da">måneder</span><span class="en">months</span></span><p><span class="da">Bage sammen</span><span class="en">Baking together</span></p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="promise">
+        <h2><span class="da">Alt bliver på din telefon.</span><span class="en">Everything stays on your phone.</span></h2>
+        <p>
+          <span class="da">Ingen konto og ingen server. Barnets alder, jeres rytme og dine noter gemmes kun på din egen enhed.</span>
+          <span class="en">No account and no server. Your child's age, your routine and your notes are stored only on your own device.</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="signup">
+    <div class="wrap">
+      <h2><span class="da">Vil du prøve Tumla først?</span><span class="en">Want to try Tumla first?</span></h2>
+      <p><span class="da">Skriv dig op, så får du én mail, når appen er klar.</span><span class="en">Sign up and you'll get one email when the app is ready.</span></p>
+      <a class="btn" href="https://forms.gle/DIT-LINK-HER">
+        <span class="da">Få besked ved lancering</span><span class="en">Get notified at launch</span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <h3><span class="da">Om indholdet</span><span class="en">About the content</span></h3>
+      <p>
+        <span class="da">Tumla giver inspiration og bygger på almindelige, anerkendte råd om leg og udvikling. Indholdet erstatter ikke rådgivning fra sundhedsplejerske eller læge.</span>
+        <span class="en">Tumla offers inspiration based on common, recognised advice about play and development. It does not replace guidance from a health visitor or doctor.</span>
+      </p>
+      <p>
+        <span class="da">Som forælder har du altid ansvaret for dit barns sikkerhed. Hold barnet under opsyn, brug materialer der passer til alderen, og stop hvis barnet virker utilpas. Tumla er et gratis hobbyprojekt og kan ikke holdes ansvarlig for skader i forbindelse med brug af indholdet.</span>
+        <span class="en">As a parent, you are always responsible for your child's safety. Supervise your child, use age-appropriate materials, and stop if your child seems uncomfortable. Tumla is a free hobby project and cannot be held liable for any injury arising from the use of its content.</span>
+      </p>
+    </div>
+    <p class="copy">© 2026 Tumla<br><span class="da">Et gratis hobbyprojekt</span><span class="en">A free hobby project</span></p>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var titles = { da: "Tumla – Små øjeblikke, hver dag", en: "Tumla – Small moments, every day" };
+    var param = new URLSearchParams(location.search).get("lang");
+    var browser = (navigator.language || "da").toLowerCase().indexOf("da") === 0 ? "da" : "en";
+    var buttons = document.querySelectorAll(".lang button");
+
+    function setLang(lang) {
+      var root = document.documentElement;
+      root.classList.toggle("en", lang === "en");
+      root.lang = lang;
+      document.title = titles[lang];
+      buttons.forEach(function (b) { b.setAttribute("aria-pressed", b.dataset.set === lang); });
+      currentLang = lang;
+      renderBars();
+    }
+
+    // Weekly overview
+    var currentLang = "da";
+    var period = "week";
+    var bars = document.querySelectorAll(".bars li");
+    var periodButtons = document.querySelectorAll(".period button");
+    var hint = document.querySelector("[data-hint]");
+
+    function renderBars() {
+      var values = Array.prototype.map.call(bars, function (li) { return +li.dataset[period]; });
+      var max = Math.max.apply(null, values);
+      bars.forEach(function (li, i) {
+        var n = values[i];
+        var word = currentLang === "da" ? (n === 1 ? "aktivitet" : "aktiviteter") : (n === 1 ? "activity" : "activities");
+        li.querySelector(".count").textContent = n + " " + word;
+        li.querySelector(".fill").style.setProperty("--w", Math.round(n / max * 100) + "%");
+      });
+      hint.style.display = period === "week" ? "" : "none";
+    }
+
+    periodButtons.forEach(function (b) {
+      b.addEventListener("click", function () {
+        period = b.dataset.period;
+        periodButtons.forEach(function (x) { x.setAttribute("aria-pressed", x === b); });
+        renderBars();
+      });
+    });
+
+    buttons.forEach(function (b) {
+      b.addEventListener("click", function () { setLang(b.dataset.set); });
+    });
+
+    setLang(param === "en" || param === "da" ? param : browser);
+  })();
+</script>
 </body>
 </html>
